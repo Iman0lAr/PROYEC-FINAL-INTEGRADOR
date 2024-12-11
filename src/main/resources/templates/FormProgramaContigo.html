@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Municipalidad Provincial de Chiclayo</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="icon" href="../imagenes/Escudo_de_Chiclayo.PNG" type="image/x-icon"> 
+    <link rel="stylesheet" href="/MisEstilos/EstilosPC.css">
+    <link rel="stylesheet" href="/MisEstilos/EstilosNavbar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<style>
+    
+        .imagenPrevia {
+            display: none;
+            /* Inicialmente oculto */
+            width: 324px;
+            /* Alto aproximado de A4 */
+            object-fit: cover;
+            /* Mantener la proporción de la imagen */
+            margin-top: 10px;
+        }
+
+        .imagenContainer {
+            display: none;
+
+            margin: 10px;
+            padding: 20px;
+            background-color: #a3b9d3;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .contenedorImágenes {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 40px;
+            width: 90%;
+            margin: auto;
+        }
+    
+</style>
+<body>
+    
+    <header th:replace="~{Componentes/Header::cabezera}" ></header>
+    <aside th:replace="~{Componentes/Nabvar::nav_bar}"></aside>
+    <button type="button" onclick="probar()">e</button>
+    <form id="formProgramaContigo" action="/guardarProgramaContigo"  th:object="${claseForm}" method="POST" enctype="multipart/form-data">
+    <div style="padding-top: 90px" class="contenedor-formulario">
+       
+        <div class="titulo-datos" style="display:flex;justify-content: space-between">
+                        <h3> Datos de la persona con  discapacidad</h3> <a id="botonBack" href="/home">Regresar</a>
+                    </div>
+        <div class="contenedor-subformulario">
+           <div class="div_validador" id="divValidadorDisc"  >
+                        Faltan datos del discapacitado
+            </div>
+            <div class="agrupador-cuadros contentInput">
+                <label>DNI</label>
+                <input type="text" id="dni_disc" class="inputValid" th:field="*{documentoDeIdentidad.nro_documento}" name="dni">
+            </div>
+            <div class="agrupador-cuadros">
+                <button class="boton" type="button" onclick="consumir1()">
+                    <i class="fas fa-search"></i> Buscar
+                </button>
+            </div>
+            <div class="agrupador-cuadros2">
+            </div>
+            <div class="agrupador-cuadros contentInput">
+                <label>Nombres</label>
+                <input type="text" id="nom_disc" class="inputValid"  th:field="*{persona_dis.nombre}" >
+            </div>
+            <div class="agrupador-cuadros contentInput">
+                <label>Apellido Paterno</label>
+                <input type="text" class="inputValid"  id="dis_ape_paterno" th:field="*{persona_dis.apell_paterno}" >
+            </div>
+            <div class="agrupador-cuadros contentInput">
+                <label>Apellido Materno</label>
+                <input type="text" class="inputValid"  id="dis_ape_materno" th:field="*{persona_dis.apell_materno}" >
+            </div>
+            <div class="agrupador-cuadros contentInput">
+                <label for="tipo-sexo">Sexo</label>
+                <input type="text" class="inputValid" id="sexDisc" th:field="*{sexo.nom_sexo}" name="sexo">
+            </div>
+            <div class="agrupador-cuadros contentInput" id="contentFechaCert">
+                <label>Fecha de Nacimiento</label>
+                <input id="fechaNac" class="inputValid"  type="date" th:field="*{discapacitado.fecha_Nac}"  >
+            </div>
+            <div class="agrupador-cuadros ">
+                <label>¿Pertenece a un Pueblo/Comunidad Indigena</label>
+                <input  type="text" th:field="*{discapacitado.com_indigena}" >
+            </div>
+            <div class="agrupador-cuadros ">
+                <label>¿Se comunica con alguna lengua originaria</label>
+                <input type="text" th:field="*{discapacitado.len_originaria}" >
+            </div>
+            <div class="agrupador-cuadros contentInput">
+                <label for="antepasado">Por su antepasados y de acuerdo a sus costumbres udtedes  se considera</label>
+                <select class="inputValid"  name="autoPersepcion" id="antepasado">
+                    <option value="" disabled selected>Seleccione una opción</option>
+                    <option value="Quechua">Quechua</option>
+                    <option value="Aymara">Aymara</option>
+                    <option value="Amazonia">Nativo de la amazonia</option>
+                    <option value="Blanco">Blanco</option>
+                    <option value="Mestizo">Mestizo</option>
+                    <option value="Afrodecendiente">Afrodecendiente</option>
+                    <option value="Otro">Otro</option>
+                    <option value="No sabe">No sabe</option>
+                  
+                </select>
+            </div>
+            <div class="agrupador-cuadros contentInput">
+                <label for="tipo-sexo">¿Maximo nivel de estudios alcanzados</label>
+                <select class="inputValid"  name="nivelEstudio" id="tipo-sexo">
+                    <option value="" disabled selected>Seleccione una opción</option>
+          
+                    <option th:each="item : ${nivelEstudios}" th:value="${item.id_nivel}" th:text="${item.nom_nivel}"></option>
+                </select>
+            </div>
+            <div class="agrupador-cuadros contentInput">
+                <label>Especifique:</label>
+                <input class="inputValid"  type="text"  th:field="*{discapacitado.estudios.desc_estudios}" >
+            </div>
+            <div class="agrupador-cuadros2"  >
+            </div>
+             <div class="agrupador-cuadros2"  >
+            </div>
+        </div>
+        <div class="titulo-datos">
+           <h3> Direccion</h3>
+        </div>
+        <div class="contenedor-subformulario">
+            <div class="div_validador" id="divValidadorDrecc" >
+                        Faltan de la direccion del discapacitado
+                      </div>
+            <div class="agrupador-cuadros contentInputDirec">
+                <label for="Departamento">Departamento</label>
+                  <input class="inputValidDirec" type="text" th:field="*{departamento.nom_departamento}" >
+                
+            </div>
+            <div class="agrupador-cuadros contentInputDirec">
+                <label >Provincia</label>
+                  <input class="inputValidDirec" type="text" th:field="*{provincia.nom_ciudad}" >               
+            </div>
+            <div class="agrupador-cuadros contentInputDirec">
+                <label for="distritos">Distrito</label>
+                <input class="inputValidDirec"  type="text" th:field="*{distrito.nom_distrito}" name="distrito">
+            </div>
+            <div class="agrupador-cuadros">
+                <label>Centro Poblado</label>
+                <input  type="text" th:field="*{direccion.centroPoblado}">
+            </div>
+            <div class="agrupador-cuadros contentInputDirec">
+                <label>Calle</label>
+                <input class="inputValidDirec"  type="text" th:field="*{direccion.calle}">
+            </div>
+            <div class="agrupador-cuadros contentInputDirec">
+                <label>Referencia</label>
+                <input class="inputValidDirec"  type="text" th:field="*{direccion.ref_direccion}">
+            </div>
+            <div class="agrupador-cuadros contentInputDirec">
+                <label>Telefono Fijo</label>
+                <input class="inputValidDirec"  type="text" th:field="*{discapacitado.tel_fijo}">
+            </div>
+            <div class="agrupador-cuadros contentInputDirec">
+                <label>Telefono Celular</label>
+                <input class="inputValidDirec"  type="text" th:field="*{discapacitado.celular}">
+            </div>
+            <div class="agrupador-cuadros contentInputDirec">
+                <label>Correo Electronico</label>
+                <input class="inputValidDirec" type="email" th:field="*{discapacitado.correo}">
+            </div>
+            <div class="agrupador-cuadros">
+               <label>Certificado de discapacidad parte 1</label>
+               <input type="file" id="imagen3" name="copiaCerPart1" accept="image/*" onchange="mostrarImagen(event, 'imagenPrevia3', 'container3')" >
+               
+            </div>
+            <div class="agrupador-cuadros">
+                <label>Certificado de discapacidad parte 2</label>
+                <input   type="file" id="imagen4" name="copiaCerPart2" accept="image/*" onchange="mostrarImagen(event, 'imagenPrevia4', 'container4')" >
+               
+            </div>
+            <div class="agrupador-cuadros">
+                <label>Numero de Certificado</label>
+                <input type="text" th:field="*{certificadoDeDiscapacidad.num_certificado}" >
+            </div>
+            <div class="agrupador-cuadros" id="contentFechaEmi">
+                <label>Fecha de Emision</label>
+                <input type="date" id="fechaEmision" th:field="*{certificadoDeDiscapacidad.fecha_emision}"  >
+            </div>
+            <div class="agrupador-cuadros" id="contentVoluntad">
+                 
+                <label for="certificado">¿La persona con discapacidad severa manifiesta su voluntad?</label>
+                <div style="display:flex;gap:15px">
+                    <input id="rad_activo"  type="radio"  th:field="*{discapacitado.mani_voluntad}"  value="1" >
+                <label  for="opcion1" >Si</label>
+                            
+                 <input id="rad_Inactivo" type="radio"  th:field="*{discapacitado.mani_voluntad}"  value="0" >
+                <label  for="opcion2">No</label></div></div>
+            
+            <div class="agrupador-cuadros " id="contentDifBanco">
+                <label for="certificado">¿La persona con discapacidad tiene dificultar para trasladarse a un banco?</label>
+                <div style="display:flex;gap:15px">
+                <input id="rad_activo" type="radio" th:field="*{discapacitado.difi_ir_banco}"  value="1" >
+                <label  for="rad_activo" >Si</label>
+                               
+                 <input id="rad_Inactivo" type="radio"  th:field="*{discapacitado.difi_ir_banco}"  value="0" >
+                 <label  for="rad_Inactivo">No</label></div></div>
+            </div>
+            
+            </div>
+        </div>
+        
+        
+        <div id="imagenContainer" class="contenedorImágenes">
+                   
+                        <div id="container3" class="imagenContainer">
+                            <h4>Copia Certificado prt 1:</h4>
+                            <img id="imagenPrevia3" class="imagenPrevia" />
+                        </div>
+                        <div id="container4" class="imagenContainer">
+                            <h4>Copia Certificado prt 2:</h4>
+                            <img id="imagenPrevia4" class="imagenPrevia" />
+                        </div>
+              
+                    </div>
+        
+        <div class="titulo-datos">
+            <h3> Datos de la/el autorizada/o</h3>
+         </div>
+         <div class="contenedor-subformulario">
+           <div class="div_validador" id="divValidadorRepre" >
+               Complete los datos del representante o eliminelos.
+                      </div>
+       
+             <div class="div_validador" id="divValidaMenorDeEdad" >
+               El discapacitado es menor de edad es obligatorio ingresar un representante.
+                      </div>
+             
+            <div class="agrupador-cuadros cotentinputsRepre">
+                <label for="dni">DNI</label>
+                <input id="dni_repre" class="inputsRepre" type="text" th:field="*{documentoDeIdentidad_repre.nro_documento}" >
+            </div>
+              <div class="agrupador-cuadros">
+                  <button class="boton" type="button" onclick="consumir2()">
+                    <i class="fas fa-search"></i> Buscar
+                </button>
+            </div>
+             <div class="agrupador-cuadros ">
+                  <button class="boton" type="button" onclick="eliminarDatos()">
+                   Eliminar datos
+                </button>
+            </div>
+            <div class="agrupador-cuadros cotentinputsRepre">
+                <label for="nombres">Nombres</label>
+                <input type="text" class="inputsRepre" id="repre_nom" th:field="*{persona_repre.nombre}"  >
+            </div>
+            <div class="agrupador-cuadros cotentinputsRepre">
+                <label for="apellido_paterno">Apellido Paterno</label>
+                <input type="text" class="inputsRepre" id="repre_apll_pat" th:field="*{persona_repre.apell_paterno}">
+            </div>
+            <div class="agrupador-cuadros cotentinputsRepre">
+                <label for="apellido_materno">Apellido Materno</label>
+                <input type="text" class="inputsRepre" id="repre_apll_mat" th:field="*{persona_repre.apell_materno}">
+            </div>
+              <div class="agrupador-cuadros cotentinputsRepre">
+                <label for="apellido_materno">Sexo</label>
+                <input type="text" class="inputsRepre" id="apellido_materno" th:field="*{sexo_repre.nom_sexo}">
+            </div>
+            <div class="agrupador-cuadros cotentinputsRepre">
+                <label for="celular">Teléfono Celular</label>
+                <input type="text" class="inputsRepre" id="celular" th:field="*{representante.tel_fijo}">
+            </div>
+            <div class="agrupador-cuadros cotentinputsRepre">
+                <label for="correo">Correo Electrónico</label>
+                <input type="email" class="inputsRepre" id="correo" th:field="*{representante.correo}" >
+            </div>
+            <div class="agrupador-cuadros cotentinputsRepre">
+                <label for="tipo-relacion">Parentesco</label>
+                <select name="parentesco" class="inputsRepre" id="tipo-relacion">
+                    <option value="" disabled selected>Seleccione una opción</option>
+                    <option th:each="item : ${parentescos}" th:value="${item.id_tipo_relacion}" th:text="${item.nom_tipo_relacion}"></option>
+                </select>
+            </div>
+            <div class="agrupador-cuadros cotentinputsRepre">
+                <label>Adjunte informe de condición social</label>
+                <input  type="file" class="inputsRepre" id="imagen4" name="informeCondificonLegal" accept="image/*" onchange="mostrarImagen(event, 'imagenPrevia5', 'container5')" >
+            </div>
+             <div class="agrupador-cuadros2">
+            </div>
+             
+             
+             <div id="imagenContainer" class="contenedorImágenes">
+                   
+                        <div id="container5" class="imagenContainer">
+                            <h4>Img informe condicion social:</h4>
+                            <img id="imagenPrevia5" class="imagenPrevia" />
+                        </div>
+               
+              
+                    </div>
+             
+             <div class="titulo-datos">
+            <h3> Imagenes del tramite</h3>
+         </div>
+             <div class="agrupador-cuadros2">
+            </div>
+             <div class="agrupador-cuadros2">
+            </div>
+             <div class="div_validador" id="divValidadoTramite" >
+                       Faltan imagenes del tramite
+                      </div>
+             <div class="agrupador-cuadros " id="contentHoja1">
+                <label for="archivo"  class="upload-label">Hoja parte 1</label>
+                <input type="file"  name="hoja1" id="hoja1" class="upload-input " accept="image/*" onchange="mostrarImagen(event, 'imagenPrevia6', 'container6')" />
+            </div>
+             <div class="agrupador-cuadros " id="contentHoja2" >
+                <label for="archivo" class="upload-label">Hoja parte 2</label>
+                <input type="file"   name="hoja2" id="hoja2"  class="upload-input " accept="image/*" onchange="mostrarImagen(event, 'imagenPrevia7', 'container7')" />
+            </div>
+            <div class="agrupador-cuadros2">
+            </div>
+              <div class="agrupador-cuadros2"  >
+            </div>
+             
+             
+             <div id="imagenContainer" class="contenedorImágenes">
+                   
+                        <div id="container6" class="imagenContainer">
+                            <h4>Hoja 1:</h4>
+                            <img id="imagenPrevia6" class="imagenPrevia" />
+                        </div>
+                        <div id="container7" class="imagenContainer">
+                            <h4>Hoja 2:</h4>
+                            <img id="imagenPrevia7" class="imagenPrevia" />
+                        </div>
+             </div>
+             
+             
+             
+             
+            <div class="agrupador-cuadros2">
+            </div>
+        </div>
+        <div class="estilo-btn">
+            <button type="submit" class="btn-guardar" style="width: 100%">
+                Guardar
+            </button>
+           <a class="boton btn-cancelar" id="but_cancelar" href="/home"> Cancelar</a> 
+        </div>
+    </div>
+       </form>
+    
+    
+    
+    
+    
+    <input id="conf" type="checkbox" th:checked="${confirmacion}" style="display: none;">
+    
+            
+             <!-- Modal -->
+            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="boton_cierre"></button>
+                        </div>
+                        <div class="modal-body ">
+                            <div
+                                style="width: 100%;display: flex;justify-content: center;align-items: center;margin: 20px;position: relative;left: -20px;">
+                                <img style="width: 200px;" src="/Imagenes/check.jpg" alt=""></div>
+                            <div style="width: 100%;margin: 20px; text-align: center;position: relative;left: -20px;">Guardado
+                                correctamente</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+    
+    
+    
+     <script src="/MisScripts/script_Nabvar.js"></script>
+     <script src="/MisScripts/ProgramaContigo.js"></script>
+     
+     <script src="/js/bootstrap.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+</body>
+</html>
